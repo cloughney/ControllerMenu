@@ -50,7 +50,8 @@
     <Compile Include="MenuContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MenuItem.cs">
+    <Compile Include="MenuItem.cs" />
+    <Compile Include="MenuItemControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Overlay.cs">

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using ControllerMenu.Services;
 
@@ -11,29 +7,39 @@ namespace ControllerMenu
 	public class MenuContainer : Panel
 	{
 		private readonly FontService fontService;
-		private readonly List<MenuItem> menuItems = new List<MenuItem>();
+		private readonly List<MenuItem> menuItems;
 		private int selectedIndex;
 
 		public MenuContainer(FontService fontService)
 		{
 			this.fontService = fontService;
+			this.menuItems = new List<MenuItem>();
+		}
+
+		public List<MenuItem> MenuItems
+		{
+			get
+			{
+				return this.menuItems;
+			}
+			set
+			{
+				this.menuItems.Clear();
+				this.menuItems.AddRange(value);
+
+				this.InitializeMenu();
+			}
 		}
 
 		protected override void OnCreateControl()
 		{
 			base.OnCreateControl();
 			
-			var width = Convert.ToInt32(Math.Ceiling(this.Parent.Width * 0.95));
-			var height = Convert.ToInt32(Math.Ceiling(this.Parent.Height * 0.95));
-			this.Size = new Size(width, height);
+			//this.BackColor = Color.Gray;
+			this.Dock = DockStyle.Fill;
+			this.Padding = new Padding(100);
 
-			var posX = (this.Parent.Width - width) / 2;
-			var posY = (this.Parent.Height - height) / 2;
-			this.Location = new Point(posX, posY);
-
-			this.Font = this.fontService.GetFontByName(Fonts.Menu, 16);
-
-			this.PopulateMenu();
+			this.InitializeMenu();
 		}
 
 		public void NextItem()
@@ -46,20 +52,37 @@ namespace ControllerMenu
 			this.SelectItem(this.selectedIndex - 1);
 		}
 
-		private void PopulateMenu()
+		public MenuItem GetSelectedItem()
 		{
-			for (var i = 0; i < 5; i++)
+			return this.menuItems[this.selectedIndex];
+		}
+
+		private void InitializeMenu()
+		{
+			this.Controls.Clear();
+
+			foreach (var menuItem in this.menuItems)
 			{
-				var menuItem = new MenuItem(String.Concat("Menu Item ", i), new Point(0, i * 50));
-				this.menuItems.Add(menuItem);
-				this.Controls.Add(menuItem);
+				menuItem.Attach(this);
 			}
 
-			this.SelectItem(0);
+			if (this.menuItems.Count > 0)
+			{
+				this.SelectItem(0);
+			}
+			else
+			{
+				this.selectedIndex = -1;
+			}
 		}
 
 		private void SelectItem(int index)
 		{
+			if (this.menuItems.Count == 0)
+			{
+				return;
+			}
+
 			if (index < 0)
 			{
 				index = this.menuItems.Count - 1;
@@ -69,7 +92,11 @@ namespace ControllerMenu
 				index = 0;
 			}
 
-			this.menuItems[this.selectedIndex].IsSelected = false;
+			if (this.selectedIndex >= 0 && this.selectedIndex < this.menuItems.Count)
+			{
+				this.menuItems[this.selectedIndex].IsSelected = false;
+			}
+			
 			this.menuItems[index].IsSelected = true;
 			this.selectedIndex = index;
 		}

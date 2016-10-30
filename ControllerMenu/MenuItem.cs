@@ -1,24 +1,27 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace ControllerMenu
 {
-	public class MenuItem : Label
+	public class MenuItem
 	{
-		private readonly string title;
-		private readonly Point location;
-
-		private float defaultFontSize = 36;
-		private float selectedFontSize;
-		private double sizeDiff;
+		private readonly Action action;
+		private readonly MenuItemControl control;
 
 		private bool isSelected;
 
-		public MenuItem(string title, Point location)
+		public MenuItem(string title, Action action)
 		{
-			this.title = title;
-			this.location = location;
+			this.action = action;
+
+			this.control = new MenuItemControl(title);
+			this.control.ControlCreated += (sender, args) =>
+			{
+				if (this.isSelected)
+				{
+					this.control.ChangeActiveState(true);
+				}
+			};
 
 			this.isSelected = false;
 		}
@@ -31,37 +34,23 @@ namespace ControllerMenu
 			}
 			set
 			{
-				float fontSize;
-				int locationOffset;
-
-				if (value)
+				if (this.control.IsCreated)
 				{
-					fontSize = this.selectedFontSize;
-					locationOffset = Convert.ToInt32(-this.sizeDiff);
-				}
-				else
-				{
-					fontSize = this.defaultFontSize;
-					locationOffset = Convert.ToInt32(this.sizeDiff);
+					this.control.ChangeActiveState(value);
 				}
 				
-				this.Font = new Font(this.Font.FontFamily, fontSize);
-				this.Location = new Point(this.Location.X, Convert.ToInt32(this.Location.Y + locationOffset));
 				this.isSelected = value;
 			}
 		}
 
-		protected override void OnCreateControl()
+		public void Attach(Control parent)
 		{
-			base.OnCreateControl();
-			this.ForeColor = Color.White;
-			this.defaultFontSize = this.Font.SizeInPoints;
-			this.selectedFontSize = (float)(this.defaultFontSize * 1.33);
-			this.sizeDiff = this.selectedFontSize - this.defaultFontSize;
+			parent.Controls.Add(this.control);
+		}
 
-			this.Text = this.title;
-			this.Location = this.location;
-			this.AutoSize = true;
+		public void PerformAction()
+		{
+			this.action();
 		}
 	}
 }
