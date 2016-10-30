@@ -1,0 +1,9 @@
+c:\users\chris\code\ControllerMenu\ControllerMenu\bin\Debug\ControllerMenu.exe.config
+c:\users\chris\code\ControllerMenu\ControllerMenu\bin\Debug\ControllerMenu.exe
+c:\users\chris\code\ControllerMenu\ControllerMenu\bin\Debug\ControllerMenu.pdb
+c:\users\chris\code\ControllerMenu\ControllerMenu\obj\Debug\ControllerMenu.csprojResolveAssemblyReference.cache
+c:\users\chris\code\ControllerMenu\ControllerMenu\obj\Debug\ControllerMenu.Overlay.resources
+c:\users\chris\code\ControllerMenu\ControllerMenu\obj\Debug\ControllerMenu.Properties.Resources.resources
+c:\users\chris\code\ControllerMenu\ControllerMenu\obj\Debug\ControllerMenu.csproj.GenerateResource.Cache
+c:\users\chris\code\ControllerMenu\ControllerMenu\obj\Debug\ControllerMenu.exe
+c:\users\chris\code\ControllerMenu\ControllerMenu\obj\Debug\ControllerMenu.pdb
