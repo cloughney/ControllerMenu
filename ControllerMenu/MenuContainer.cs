@@ -12,6 +12,7 @@ namespace ControllerMenu
 	{
 		private readonly FontService fontService;
 		private readonly List<MenuItem> menuItems = new List<MenuItem>();
+		private int selectedIndex;
 
 		public MenuContainer(FontService fontService)
 		{
@@ -35,6 +36,16 @@ namespace ControllerMenu
 			this.PopulateMenu();
 		}
 
+		public void NextItem()
+		{
+			this.SelectItem(this.selectedIndex + 1);
+		}
+
+		public void PreviousItem()
+		{
+			this.SelectItem(this.selectedIndex - 1);
+		}
+
 		private void PopulateMenu()
 		{
 			for (var i = 0; i < 5; i++)
@@ -44,7 +55,23 @@ namespace ControllerMenu
 				this.Controls.Add(menuItem);
 			}
 
-			this.menuItems[0].IsSelected = true;
+			this.SelectItem(0);
+		}
+
+		private void SelectItem(int index)
+		{
+			if (index < 0)
+			{
+				index = this.menuItems.Count - 1;
+			}
+			else if (index >= this.menuItems.Count)
+			{
+				index = 0;
+			}
+
+			this.menuItems[this.selectedIndex].IsSelected = false;
+			this.menuItems[index].IsSelected = true;
+			this.selectedIndex = index;
 		}
 	}
 }
