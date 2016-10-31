@@ -1,0 +1,11 @@
+{
+	"commands": [
+		{
+			"title": "Exit",
+			"action": {
+				"type": "exit",
+				"args": ""
+			}
+		}
+	]
+}

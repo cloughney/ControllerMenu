@@ -1,22 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Autofac;
+using ControllerMenu.Services;
 
 namespace ControllerMenu
 {
-	static class Program
+	public static class Program
 	{
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
 		[STAThread]
-		static void Main()
+		public static void Main()
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Overlay());
+
+			var container = RegisterServices();
+			var overlayForm = container.Resolve<Overlay>();
+
+			Application.Run(overlayForm);
+		}
+
+		private static IContainer RegisterServices()
+		{
+			var builder = new ContainerBuilder();
+
+			builder.RegisterType<FontService>().As<IFontService>().SingleInstance();
+			builder.RegisterType<JsonCommandResolver>().As<ICommandResolver>();
+
+			builder.RegisterType<KeyboardInputHandler>().As<IInputHandler>();
+
+			builder.RegisterType<Overlay>();
+
+			return builder.Build();
 		}
 	}
 }

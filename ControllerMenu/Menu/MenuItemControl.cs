@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ControllerMenu
+namespace ControllerMenu.Menu
 {
 	public class MenuItemControl : Label
 	{
@@ -15,12 +15,9 @@ namespace ControllerMenu
 		public MenuItemControl(string title)
 		{
 			this.title = title;
-			this.IsCreated = false;
 		}
 
 		public event EventHandler ControlCreated;
-
-		public bool IsCreated { get; private set; }
 
 		public void ChangeActiveState(bool updatedIsSelected)
 		{
@@ -54,8 +51,7 @@ namespace ControllerMenu
 			this.Text = this.title;
 			this.Dock = DockStyle.Bottom;
 			this.AutoSize = true;
-
-			this.IsCreated = true;
+			
 			this.ControlCreated?.Invoke(this, EventArgs.Empty);
 		}
 	}

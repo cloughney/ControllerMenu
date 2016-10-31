@@ -12,7 +12,12 @@ namespace ControllerMenu.Services
 		public static string Menu = "Open Sans";
 	}
 
-	public class FontService
+	public interface IFontService
+	{
+		Font GetFontByName(string name, float size);
+	}
+
+	public class FontService : IFontService
 	{
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);

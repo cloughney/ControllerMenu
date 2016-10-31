@@ -1,19 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
+using ControllerMenu.Controls;
 using ControllerMenu.Services;
 
-namespace ControllerMenu
+namespace ControllerMenu.Menu
 {
-	public class MenuContainer : Panel
+	public class MenuContainer : Component<MenuContainerControl>
 	{
-		private readonly FontService fontService;
 		private readonly List<MenuItem> menuItems;
 		private int selectedIndex;
 
-		public MenuContainer(FontService fontService)
+		public MenuContainer()
 		{
-			this.fontService = fontService;
 			this.menuItems = new List<MenuItem>();
+
+			this.Control = new MenuContainerControl();
+			this.Control.VisibleChanged += (sender, args) =>
+			{
+				var control = sender as Control;
+				if (control != null && control.Visible)
+				{
+					this.InitializeMenu();
+				}
+			};
+		}
+
+		public bool Visible
+		{
+			get
+			{
+				return this.Control.Visible;
+			}
+			set
+			{
+				this.Control.Visible = value;
+			}
 		}
 
 		public List<MenuItem> MenuItems
@@ -31,13 +52,9 @@ namespace ControllerMenu
 			}
 		}
 
-		protected override void OnCreateControl()
+		public override void Attach(Control parent)
 		{
-			base.OnCreateControl();
-			
-			//this.BackColor = Color.Gray;
-			this.Dock = DockStyle.Fill;
-			this.Padding = new Padding(100);
+			base.Attach(parent);
 
 			this.InitializeMenu();
 		}
@@ -59,13 +76,6 @@ namespace ControllerMenu
 
 		private void InitializeMenu()
 		{
-			this.Controls.Clear();
-
-			foreach (var menuItem in this.menuItems)
-			{
-				menuItem.Attach(this);
-			}
-
 			if (this.menuItems.Count > 0)
 			{
 				this.SelectItem(0);
@@ -74,6 +84,8 @@ namespace ControllerMenu
 			{
 				this.selectedIndex = -1;
 			}
+
+			this.Control.InitializeMenu(this.menuItems);
 		}
 
 		private void SelectItem(int index)

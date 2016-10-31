@@ -1,32 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ControllerMenu.Menu;
 using ControllerMenu.Services;
+using MenuItem = ControllerMenu.Menu.MenuItem;
 
 namespace ControllerMenu
 {
 	public partial class Overlay : Form
 	{
-		private readonly double maxOpacityValue = 1.0;
+		private readonly double maxOpacityValue = 0.95;
 
-		private readonly FontService fontService = new FontService();
+		private readonly IFontService fontService;
+		private readonly ICommandResolver commandResolver;
+		private readonly IEnumerable<IInputHandler> inputHandlers;
+
 		private readonly MenuContainer primaryMenuContainer;
 		private readonly MenuContainer secondaryMenuContainer;
 		private MenuContainer activeMenuContainer;
 
-		public Overlay()
+		public Overlay(
+			IFontService fontService,
+			ICommandResolver commandResolver,
+			IEnumerable<IInputHandler> inputHandlers)
 		{
 			this.InitializeComponent();
 
-			this.primaryMenuContainer = new MenuContainer(this.fontService);
-			this.secondaryMenuContainer = new MenuContainer(this.fontService)
+			this.fontService = fontService;
+			this.commandResolver = commandResolver;
+			this.inputHandlers = inputHandlers;
+
+			this.primaryMenuContainer = new MenuContainer();
+			this.secondaryMenuContainer = new MenuContainer
 			{
 				Visible = false
 			};
@@ -52,30 +59,6 @@ namespace ControllerMenu
 			return base.IsInputKey(keyData);
 		}
 
-		protected override void OnKeyDown(KeyEventArgs e)
-		{
-			switch (e.KeyCode)
-			{
-				case Keys.Escape:
-					this.Close();
-					break;
-
-				case Keys.Up:
-					this.activeMenuContainer.PreviousItem();
-					break;
-
-				case Keys.Down:
-					this.activeMenuContainer.NextItem();
-					break;
-
-				case Keys.Enter:
-					this.activeMenuContainer.GetSelectedItem().PerformAction();
-					break;
-			}
-
-			base.OnKeyDown(e);
-		}
-
 		private void Overlay_Load(object sender, EventArgs e)
 		{
 			this.SetupWindow();
@@ -93,6 +76,23 @@ namespace ControllerMenu
 
 			this.RenderMenu();
 			this.PopulatePrimaryMenu();
+
+			foreach (var inputHandler in this.inputHandlers)
+			{
+				inputHandler.Listen(this);
+				inputHandler.InputDetected += this.OnInputRecieved;
+			}
+		}
+
+		private async Task FadeIn()
+		{
+			while (this.Opacity < this.maxOpacityValue)
+			{
+				await Task.Delay(10);
+				this.Opacity += 0.05;
+			}
+
+			this.Opacity = this.maxOpacityValue;
 		}
 
 		private void RenderMenu()
@@ -114,8 +114,8 @@ namespace ControllerMenu
 			primaryMenuPanel.Font = this.fontService.GetFontByName(Fonts.Menu, 32);
 			secondaryMenuPanel.Font = this.fontService.GetFontByName(Fonts.Menu, 24);
 
-			primaryMenuPanel.Controls.Add(this.primaryMenuContainer);
-			secondaryMenuPanel.Controls.Add(this.secondaryMenuContainer);
+			this.primaryMenuContainer.Attach(primaryMenuPanel);
+			this.secondaryMenuContainer.Attach(secondaryMenuPanel);
 
 			this.Controls.Add(primaryMenuPanel);
 			this.Controls.Add(secondaryMenuPanel);
@@ -123,26 +123,15 @@ namespace ControllerMenu
 
 		private void PopulatePrimaryMenu()
 		{
+			var commands = this.commandResolver.Resolve();
 			this.primaryMenuContainer.MenuItems = new List<MenuItem>
 			{
 				new MenuItem("Test", () =>
 				{
 					this.secondaryMenuContainer.MenuItems = new List<MenuItem>
 					{
-						new MenuItem("Close", () =>
-						{
-							this.secondaryMenuContainer.MenuItems.Clear();
-							this.secondaryMenuContainer.Visible = false;
-							this.activeMenuContainer = this.primaryMenuContainer;
-							this.Refresh();
-						}),
-						new MenuItem("Also Close", () =>
-						{
-							this.secondaryMenuContainer.MenuItems.Clear();
-							this.secondaryMenuContainer.Visible = false;
-							this.activeMenuContainer = this.primaryMenuContainer;
-							this.Refresh();
-						})
+						new MenuItem("Close this menu", this.CloseSecondContainer),
+						new MenuItem("Also close this menu", this.CloseSecondContainer)
 					};
 
 					this.secondaryMenuContainer.Visible = true;
@@ -154,15 +143,41 @@ namespace ControllerMenu
 			};
 		}
 
-		private async Task FadeIn()
+		private void OnInputRecieved(IInputHandler handler, InputType input)
 		{
-			while (this.Opacity < this.maxOpacityValue)
+			switch (input)
 			{
-				await Task.Delay(10);
-				this.Opacity += 0.05;
-			}
+				case InputType.Back:
+					if (this.activeMenuContainer == this.primaryMenuContainer)
+					{
+						this.Close();
+					}
+					else
+					{
+						this.CloseSecondContainer();
+					}
 
-			this.Opacity = this.maxOpacityValue;
+					break;
+
+				case InputType.PreviousItem:
+					this.activeMenuContainer.PreviousItem();
+					break;
+
+				case InputType.NextItem:
+					this.activeMenuContainer.NextItem();
+					break;
+
+				case InputType.SelectItem:
+					this.activeMenuContainer.GetSelectedItem().PerformAction();
+					break;
+			}
+		}
+
+		private void CloseSecondContainer()
+		{
+			this.secondaryMenuContainer.MenuItems.Clear();
+			this.secondaryMenuContainer.Visible = false;
+			this.activeMenuContainer = this.primaryMenuContainer;
 		}
 	}
 }
