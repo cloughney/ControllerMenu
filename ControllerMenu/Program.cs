@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using Autofac;
 using ControllerMenu.Services;
@@ -8,7 +10,7 @@ namespace ControllerMenu
 	public static class Program
 	{
 		[STAThread]
-		public static void Main()
+		public static void Main(string[] args)
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -16,6 +18,13 @@ namespace ControllerMenu
 			var container = RegisterServices();
 			var overlayForm = container.Resolve<Overlay>();
 
+			var processIdRaw = args.Length > 0 ? args[0] : null;
+			int processId;
+			if (Int32.TryParse(processIdRaw, out processId))
+			{
+				
+			}
+			
 			Application.Run(overlayForm);
 		}
 
@@ -27,6 +36,8 @@ namespace ControllerMenu
 			builder.RegisterType<JsonCommandResolver>().As<ICommandResolver>();
 
 			builder.RegisterType<KeyboardInputHandler>().As<IInputHandler>();
+
+			builder.RegisterType<ActiveWindowService>().As<IActiveWindowService>();
 
 			builder.RegisterType<Overlay>();
 

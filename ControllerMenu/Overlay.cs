@@ -13,6 +13,7 @@ namespace ControllerMenu
 	{
 		private readonly double maxOpacityValue = 0.95;
 
+		private readonly IActiveWindowService activeWindowService;
 		private readonly IFontService fontService;
 		private readonly ICommandResolver commandResolver;
 		private readonly IEnumerable<IInputHandler> inputHandlers;
@@ -22,12 +23,14 @@ namespace ControllerMenu
 		private MenuContainer activeMenuContainer;
 
 		public Overlay(
+			IActiveWindowService activeWindowService,
 			IFontService fontService,
 			ICommandResolver commandResolver,
 			IEnumerable<IInputHandler> inputHandlers)
 		{
 			this.InitializeComponent();
 
+			this.activeWindowService = activeWindowService;
 			this.fontService = fontService;
 			this.commandResolver = commandResolver;
 			this.inputHandlers = inputHandlers;
@@ -137,6 +140,12 @@ namespace ControllerMenu
 					this.secondaryMenuContainer.Visible = true;
 					this.activeMenuContainer = this.secondaryMenuContainer;
 					this.Refresh();
+				}),
+
+				new MenuItem("Active", () =>
+				{
+					var name = this.activeWindowService.GetProcessName();
+					MessageBox.Show(name);
 				}),
 
 				new MenuItem("Exit", this.Close)
