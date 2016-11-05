@@ -1,4 +1,4 @@
-Numpad0::
+Down::
 	WinGetActiveTitle, Title
 	WinGet, PID, PID, %Title%
-	Run, ControllerMenu.exe %PID%
+	Run, ControllerMenu\bin\Debug\ControllerMenu.exe %PID%

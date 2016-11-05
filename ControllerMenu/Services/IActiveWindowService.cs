@@ -2,6 +2,7 @@
 {
 	public interface IActiveWindowService
 	{
-		string GetProcessName();
+	    int? ProcessId { set; }
+	    ActiveWindowConfiguration CurrentConfiguration { get;  }
 	}
 }

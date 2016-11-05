@@ -144,7 +144,7 @@ namespace ControllerMenu
 
 				new MenuItem("Active", () =>
 				{
-					var name = this.activeWindowService.GetProcessName();
+					var name = this.activeWindowService.ProcessName;
 					MessageBox.Show(name);
 				}),
 

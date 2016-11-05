@@ -22,7 +22,7 @@ namespace ControllerMenu
 			int processId;
 			if (Int32.TryParse(processIdRaw, out processId))
 			{
-				
+			    container.Resolve<IActiveWindowService>().ProcessId = processId;
 			}
 			
 			Application.Run(overlayForm);
@@ -37,7 +37,10 @@ namespace ControllerMenu
 
 			builder.RegisterType<KeyboardInputHandler>().As<IInputHandler>();
 
-			builder.RegisterType<ActiveWindowService>().As<IActiveWindowService>();
+			builder
+			    .RegisterType<ActiveWindowService>()
+			    .As<IActiveWindowService>()
+			    .SingleInstance();
 
 			builder.RegisterType<Overlay>();
 
