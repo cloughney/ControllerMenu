@@ -1,16 +1,17 @@
-using System;
 using System.Windows.Forms;
 using ControllerMenu.Controls;
+using ControllerMenu.Menu.Models;
+using ControllerMenu.Menu.ViewModels;
 
-namespace ControllerMenu.Menu
+namespace ControllerMenu.View.Menu
 {
 	public class MenuItem : Component<MenuItemControl>
 	{
-		private readonly Action action;
+		private readonly MenuAction action;
 
 		private bool isSelected;
 
-		public MenuItem(string title, Action action)
+		public MenuItem(string title, MenuAction action)
 		{
 			this.action = action;
 			this.isSelected = false;
@@ -37,7 +38,7 @@ namespace ControllerMenu.Menu
 
 		public void PerformAction()
 		{
-			this.action();
+			this.action.Perform();
 		}
 
 		public override void Attach(Control parent)

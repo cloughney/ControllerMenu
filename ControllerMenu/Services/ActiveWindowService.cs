@@ -18,10 +18,7 @@ namespace ControllerMenu.Services
 	        this.configuredWindows = new Dictionary<string, ActiveWindowConfiguration>();
 	    }
 
-	    private string ProcessName
-	    {
-	        get { return this.ProcessId.HasValue ? Process.GetProcessById(this.ProcessId.Value).MainModule.FileName : null; }
-	    }
+	    private string ProcessName => this.ProcessId.HasValue ? Process.GetProcessById(this.ProcessId.Value).MainModule.FileName : null;
 
 	    public int? ProcessId { private get; set; }
 

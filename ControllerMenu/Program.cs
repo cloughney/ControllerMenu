@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
 using Autofac;
+using ControllerMenu.Menu.Actions;
+using ControllerMenu.Menu.Loaders;
+using ControllerMenu.Menu.Loaders.Json;
 using ControllerMenu.Services;
 
 namespace ControllerMenu
@@ -16,16 +17,18 @@ namespace ControllerMenu
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			var container = RegisterServices();
-			var overlayForm = container.Resolve<Overlay>();
 
 			var processIdRaw = args.Length > 0 ? args[0] : null;
 			int processId;
 			if (Int32.TryParse(processIdRaw, out processId))
 			{
-			    container.Resolve<IActiveWindowService>().ProcessId = processId;
+			    var activeWindowService = container.Resolve<IActiveWindowService>();
+			    activeWindowService.ProcessId = processId;
 			}
-			
-			Application.Run(overlayForm);
+
+		    var overlayForm = container.Resolve<Overlay>();
+
+		    Application.Run(overlayForm);
 		}
 
 		private static IContainer RegisterServices()
@@ -33,14 +36,14 @@ namespace ControllerMenu
 			var builder = new ContainerBuilder();
 
 			builder.RegisterType<FontService>().As<IFontService>().SingleInstance();
-			builder.RegisterType<JsonCommandResolver>().As<ICommandResolver>();
+			builder.RegisterType<JsonMenuLoader>().As<IMenuLoader>().SingleInstance();
 
-			builder.RegisterType<KeyboardInputHandler>().As<IInputHandler>();
+			builder.RegisterType<KeyboardInputHandler>().As<IInputHandler>().SingleInstance();
 
-			builder
-			    .RegisterType<ActiveWindowService>()
-			    .As<IActiveWindowService>()
-			    .SingleInstance();
+			builder.RegisterType<ActiveWindowService>().As<IActiveWindowService>().SingleInstance();
+
+		    builder.RegisterType<JsonMenuLoader>().As<IMenuLoader>().SingleInstance();
+		    builder.RegisterType<DefaultActionResolver>().As<IActionResolver>().SingleInstance();
 
 			builder.RegisterType<Overlay>();
 

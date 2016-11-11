@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace ControllerMenu.Menu
+namespace ControllerMenu.View.Menu
 {
 	public class MenuContainerControl : Panel
 	{

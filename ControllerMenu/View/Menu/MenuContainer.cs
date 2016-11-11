@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using ControllerMenu.Controls;
-using ControllerMenu.Services;
 
-namespace ControllerMenu.Menu
+namespace ControllerMenu.View.Menu
 {
-	public class MenuContainer : Component<MenuContainerControl>
+	public class MenuPanel : Component<MenuContainerControl>
 	{
 		private readonly List<MenuItem> menuItems;
 		private int selectedIndex;
 
-		public MenuContainer()
+		public MenuPanel()
 		{
 			this.menuItems = new List<MenuItem>();
 

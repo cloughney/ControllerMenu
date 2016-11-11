@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ControllerMenu.Menu
+namespace ControllerMenu.Menu.ViewModels
 {
 	public class MenuItemControl : Label
 	{

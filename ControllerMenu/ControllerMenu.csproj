@@ -85,18 +85,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\CommandConfiguration.cs" />
-    <Compile Include="Commands\CommandEntry.cs" />
     <Compile Include="Components\Component.cs" />
-    <Compile Include="Menu\MenuContainer.cs" />
-    <Compile Include="Menu\MenuContainerControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Menu\MenuItem.cs" />
-    <Compile Include="Menu\MenuItemControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Menu\Actions\DefaultActionResolver.cs" />
+    <Compile Include="Menu\Actions\IActionResolver.cs" />
+    <Compile Include="Menu\Loaders\IMenuLoader.cs" />
+    <Compile Include="Menu\Loaders\Json\JsonAction.cs" />
+    <Compile Include="Menu\Loaders\Json\JsonMenuConfiguration.cs" />
+    <Compile Include="Menu\Loaders\Json\JsonMenuItem.cs" />
+    <Compile Include="Menu\Loaders\Json\JsonMenuLoader.cs" />
+    <Compile Include="Menu\Models\IMenuContainer.cs" />
+    <Compile Include="Menu\Models\MenuAction.cs" />
+    <Compile Include="Menu\Models\MenuContainer.cs" />
+    <Compile Include="Menu\Models\MenuItem.cs" />
     <Compile Include="Overlay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,9 +109,12 @@
     <Compile Include="Services\IActiveWindowService.cs" />
     <Compile Include="Services\InputHandler.cs" />
     <Compile Include="Services\JoystickInputHandler.cs" />
-    <Compile Include="Services\JsonCommandResolver.cs" />
     <Compile Include="Services\FontService.cs" />
     <Compile Include="Services\KeyboardInputHandler.cs" />
+    <Compile Include="View\Menu\MenuContainer.cs" />
+    <Compile Include="View\Menu\MenuContainerControl.cs" />
+    <Compile Include="View\Menu\MenuItem.cs" />
+    <Compile Include="View\Menu\MenuItemControl.cs" />
     <EmbeddedResource Include="Overlay.resx">
       <DependentUpon>Overlay.cs</DependentUpon>
     </EmbeddedResource>
@@ -125,9 +128,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="commands.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Include="mainmenu.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -142,6 +145,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Menu" />
+    <Folder Include="Menu\Loaders\Json" />
+    <Folder Include="Services" />
+    <Folder Include="View\Menu" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

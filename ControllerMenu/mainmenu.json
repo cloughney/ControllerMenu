@@ -1,0 +1,15 @@
+{
+	"menuItems": [
+		{
+			"title": "Exit",
+			"action": {
+                "type": "navigation",
+                "options": {
+                    "operations": [
+                        "exit"
+                    ]
+                }
+            }
+		}
+	]
+}

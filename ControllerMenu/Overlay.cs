@@ -4,39 +4,41 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ControllerMenu.Menu;
+using ControllerMenu.Menu.Loaders;
+using ControllerMenu.Menu.Models;
 using ControllerMenu.Services;
-using MenuItem = ControllerMenu.Menu.MenuItem;
+using ControllerMenu.View.Menu;
 
 namespace ControllerMenu
 {
 	public partial class Overlay : Form
 	{
-		private readonly double maxOpacityValue = 0.95;
+	    private const double MaxOpacityValue = 0.95;
 
-		private readonly IActiveWindowService activeWindowService;
+	    private readonly IActiveWindowService activeWindowService;
 		private readonly IFontService fontService;
-		private readonly ICommandResolver commandResolver;
+		private readonly IMenuLoader menuLoader;
 		private readonly IEnumerable<IInputHandler> inputHandlers;
 
-		private readonly MenuContainer primaryMenuContainer;
-		private readonly MenuContainer secondaryMenuContainer;
-		private MenuContainer activeMenuContainer;
+		private readonly MenuPanel primaryMenuContainer;
+		private readonly MenuPanel secondaryMenuContainer;
+		private MenuPanel activeMenuContainer;
 
 		public Overlay(
 			IActiveWindowService activeWindowService,
 			IFontService fontService,
-			ICommandResolver commandResolver,
+			IMenuLoader menuLoader,
 			IEnumerable<IInputHandler> inputHandlers)
 		{
 			this.InitializeComponent();
 
 			this.activeWindowService = activeWindowService;
 			this.fontService = fontService;
-			this.commandResolver = commandResolver;
+			this.menuLoader = menuLoader;
 			this.inputHandlers = inputHandlers;
 
-			this.primaryMenuContainer = new MenuContainer();
-			this.secondaryMenuContainer = new MenuContainer
+			this.primaryMenuContainer = new MenuPanel();
+			this.secondaryMenuContainer = new MenuPanel
 			{
 				Visible = false
 			};
@@ -89,13 +91,13 @@ namespace ControllerMenu
 
 		private async Task FadeIn()
 		{
-			while (this.Opacity < this.maxOpacityValue)
+			while (this.Opacity < MaxOpacityValue)
 			{
 				await Task.Delay(10);
 				this.Opacity += 0.05;
 			}
 
-			this.Opacity = this.maxOpacityValue;
+			this.Opacity = MaxOpacityValue;
 		}
 
 		private void RenderMenu()
@@ -126,30 +128,16 @@ namespace ControllerMenu
 
 		private void PopulatePrimaryMenu()
 		{
-			var commands = this.commandResolver.Resolve();
-			this.primaryMenuContainer.MenuItems = new List<MenuItem>
+			var mainMenu = this.menuLoader.Load("mainmenu"); //TODO string class enum thingy
+
+			foreach (var menuItem in mainMenu.MenuItems)
 			{
-				new MenuItem("Test", () =>
-				{
-					this.secondaryMenuContainer.MenuItems = new List<MenuItem>
-					{
-						new MenuItem("Close this menu", this.CloseSecondContainer),
-						new MenuItem("Also close this menu", this.CloseSecondContainer)
-					};
+			    this.primaryMenuContainer.MenuItems.Add(
+			        new View.Menu.MenuItem(menuItem.Title, menuItem.Action));
+			}
 
-					this.secondaryMenuContainer.Visible = true;
-					this.activeMenuContainer = this.secondaryMenuContainer;
-					this.Refresh();
-				}),
-
-				new MenuItem("Active", () =>
-				{
-					var name = this.activeWindowService.ProcessName;
-					MessageBox.Show(name);
-				}),
-
-				new MenuItem("Exit", this.Close)
-			};
+		    var exitItem = new View.Menu.MenuItem("Exit", new MenuAction(this.Close));
+		    this.primaryMenuContainer.MenuItems.Add(exitItem);
 		}
 
 		private void OnInputRecieved(IInputHandler handler, InputType input)
