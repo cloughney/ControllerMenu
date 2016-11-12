@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace ControllerMenu.Controls
+namespace ControllerMenu.View.Components
 {
 	public abstract class Component<TControl> 
 		where TControl : Control

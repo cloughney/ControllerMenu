@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using ControllerMenu.Controls;
+using ControllerMenu.View.Components;
 
 namespace ControllerMenu.View.Menu
 {

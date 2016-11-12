@@ -1,7 +1,7 @@
 using System.Windows.Forms;
-using ControllerMenu.Controls;
 using ControllerMenu.Menu.Models;
 using ControllerMenu.Menu.ViewModels;
+using ControllerMenu.View.Components;
 
 namespace ControllerMenu.View.Menu
 {

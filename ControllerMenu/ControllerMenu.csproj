@@ -86,7 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
-    <Compile Include="Components\Component.cs" />
     <Compile Include="IActionBuilder.cs" />
     <Compile Include="IApplicationContext.cs" />
     <Compile Include="Menu\Actions\DefaultActionResolver.cs" />
@@ -115,6 +114,7 @@
     <Compile Include="Services\JoystickInputHandler.cs" />
     <Compile Include="Services\FontService.cs" />
     <Compile Include="Services\KeyboardInputHandler.cs" />
+    <Compile Include="View\Components\Component.cs" />
     <Compile Include="View\Menu\MenuPanel.cs" />
     <Compile Include="View\Menu\MenuContainerControl.cs" />
     <Compile Include="View\Menu\MenuItem.cs" />

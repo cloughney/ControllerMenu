@@ -33,7 +33,7 @@ namespace ControllerMenu
 		{
 			this.InitializeComponent();
 
-		    context.Overlay = this;
+		    context.Overlay = this; //TODO better solution for this?
 
 			this.activeWindowService = activeWindowService;
 			this.fontService = fontService;
