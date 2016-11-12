@@ -85,9 +85,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationContext.cs" />
     <Compile Include="Components\Component.cs" />
+    <Compile Include="IActionBuilder.cs" />
+    <Compile Include="IApplicationContext.cs" />
     <Compile Include="Menu\Actions\DefaultActionResolver.cs" />
     <Compile Include="Menu\Actions\IActionResolver.cs" />
+    <Compile Include="Menu\Actions\NavigationActionBuilder.cs" />
     <Compile Include="Menu\Loaders\IMenuLoader.cs" />
     <Compile Include="Menu\Loaders\Json\JsonAction.cs" />
     <Compile Include="Menu\Loaders\Json\JsonMenuConfiguration.cs" />
@@ -111,7 +115,7 @@
     <Compile Include="Services\JoystickInputHandler.cs" />
     <Compile Include="Services\FontService.cs" />
     <Compile Include="Services\KeyboardInputHandler.cs" />
-    <Compile Include="View\Menu\MenuContainer.cs" />
+    <Compile Include="View\Menu\MenuPanel.cs" />
     <Compile Include="View\Menu\MenuContainerControl.cs" />
     <Compile Include="View\Menu\MenuItem.cs" />
     <Compile Include="View\Menu\MenuItemControl.cs" />
@@ -148,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Menu" />
+    <Folder Include="Menu\Actions" />
     <Folder Include="Menu\Loaders\Json" />
     <Folder Include="Services" />
     <Folder Include="View\Menu" />

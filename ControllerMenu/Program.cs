@@ -43,9 +43,13 @@ namespace ControllerMenu
 			builder.RegisterType<ActiveWindowService>().As<IActiveWindowService>().SingleInstance();
 
 		    builder.RegisterType<JsonMenuLoader>().As<IMenuLoader>().SingleInstance();
-		    builder.RegisterType<DefaultActionResolver>().As<IActionResolver>().SingleInstance();
 
-			builder.RegisterType<Overlay>();
+		    builder.RegisterType<DefaultActionResolver>().As<IActionResolver>().SingleInstance();
+		    builder.RegisterType<NavigationActionBuilder>().As<IActionBuilder>();
+
+		    builder.RegisterType<ApplicationContext>().As<IApplicationContext>().SingleInstance();
+
+		    builder.RegisterType<Overlay>();
 
 			return builder.Build();
 		}

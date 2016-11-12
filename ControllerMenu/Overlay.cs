@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ControllerMenu.Menu;
 using ControllerMenu.Menu.Loaders;
 using ControllerMenu.Menu.Models;
 using ControllerMenu.Services;
@@ -25,12 +25,15 @@ namespace ControllerMenu
 		private MenuPanel activeMenuContainer;
 
 		public Overlay(
+		    IApplicationContext context,
 			IActiveWindowService activeWindowService,
 			IFontService fontService,
 			IMenuLoader menuLoader,
 			IEnumerable<IInputHandler> inputHandlers)
 		{
 			this.InitializeComponent();
+
+		    context.Overlay = this;
 
 			this.activeWindowService = activeWindowService;
 			this.fontService = fontService;
@@ -80,9 +83,9 @@ namespace ControllerMenu
 			await this.FadeIn();
 
 			this.RenderMenu();
-			this.PopulatePrimaryMenu();
+			this.PopulateMenu("mainmenu"); //TODO string class enum thingy for menu names?
 
-			foreach (var inputHandler in this.inputHandlers)
+		    foreach (var inputHandler in this.inputHandlers)
 			{
 				inputHandler.Listen(this);
 				inputHandler.InputDetected += this.OnInputRecieved;
@@ -126,18 +129,17 @@ namespace ControllerMenu
 			this.Controls.Add(secondaryMenuPanel);
 		}
 
-		private void PopulatePrimaryMenu()
+		private void PopulateMenu(string menuName)
 		{
-			var mainMenu = this.menuLoader.Load("mainmenu"); //TODO string class enum thingy
-
-			foreach (var menuItem in mainMenu.MenuItems)
-			{
-			    this.primaryMenuContainer.MenuItems.Add(
-			        new View.Menu.MenuItem(menuItem.Title, menuItem.Action));
-			}
+			var mainMenu = this.menuLoader.Load(menuName);
+		    var menuItems = mainMenu.MenuItems
+		        .Select(menuItem => new View.Menu.MenuItem(menuItem.Title, menuItem.Action))
+		        .ToList();
 
 		    var exitItem = new View.Menu.MenuItem("Exit", new MenuAction(this.Close));
-		    this.primaryMenuContainer.MenuItems.Add(exitItem);
+		    menuItems.Add(exitItem);
+
+		    this.primaryMenuContainer.MenuItems = menuItems;
 		}
 
 		private void OnInputRecieved(IInputHandler handler, InputType input)

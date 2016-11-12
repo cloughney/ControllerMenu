@@ -6,33 +6,23 @@ namespace ControllerMenu.Menu.Actions
 {
     public class DefaultActionResolver : IActionResolver
     {
-        private readonly Dictionary<string, Func<object, Action>> registeredActionBuilders;
+        private readonly IApplicationContext context;
+        private readonly Dictionary<string, IActionBuilder> registeredActionBuilders;
 
-        public DefaultActionResolver(IEnumerable<IActionBuilder> actionBuilders)
+        public DefaultActionResolver(
+            IApplicationContext context,
+            IEnumerable<IActionBuilder> actionBuilders)
         {
-
+            this.context = context;
+            this.registeredActionBuilders = actionBuilders.ToDictionary(k => k.Type);
         }
 
         public Action Resolve(string actionType, object options)
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    public interface IActionBuilder
-    {
-        string Type { get; }
-
-        Action Build(object options);
-    }
-
-    public class NavigationActionBuilder : IActionBuilder
-    {
-        public string Type => "navigation";
-
-        public Action Build(object options)
-        {
-            throw new NotImplementedException();
+            IActionBuilder builder;
+            return this.registeredActionBuilders.TryGetValue(actionType, out builder)
+                ? builder.Build(this.context, options)
+                : null;
         }
     }
 }
