@@ -2,6 +2,8 @@
 using System.Windows.Forms;
 using Autofac;
 using ControllerMenu.Menu.Actions;
+using ControllerMenu.Menu.Actions.Launch;
+using ControllerMenu.Menu.Actions.Navigation;
 using ControllerMenu.Menu.Loaders;
 using ControllerMenu.Menu.Loaders.Json;
 using ControllerMenu.Services;
@@ -46,8 +48,9 @@ namespace ControllerMenu
 
 		    builder.RegisterType<DefaultActionResolver>().As<IActionResolver>().SingleInstance();
 		    builder.RegisterType<NavigationActionBuilder>().As<IActionBuilder>();
+			builder.RegisterType<LaunchActionBuilder>().As<IActionBuilder>();
 
-		    builder.RegisterType<ApplicationContext>().As<IApplicationContext>().SingleInstance();
+			builder.RegisterType<ApplicationContext>().As<IApplicationContext>().SingleInstance();
 
 		    builder.RegisterType<Overlay>();
 

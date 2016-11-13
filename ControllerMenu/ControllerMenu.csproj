@@ -35,8 +35,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=4.1.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.4.1.1\lib\net45\Autofac.dll</HintPath>
+    <Reference Include="Autofac, Version=4.2.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.2.0\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.Configuration, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
@@ -89,10 +89,18 @@
     <Compile Include="IActionBuilder.cs" />
     <Compile Include="IApplicationContext.cs" />
     <Compile Include="Menu\Actions\DefaultActionResolver.cs" />
+    <Compile Include="Menu\Actions\EndProcess\EndProcessActionBuilder.cs" />
+    <Compile Include="Menu\Actions\EndProcess\EndProcessActionOptions.cs" />
+    <Compile Include="Menu\Actions\IActionOptions.cs" />
     <Compile Include="Menu\Actions\IActionResolver.cs" />
-    <Compile Include="Menu\Actions\NavigationActionBuilder.cs" />
+    <Compile Include="Menu\Actions\ActionOptions.cs" />
+    <Compile Include="Menu\Actions\Launch\LaunchActionBuilder.cs" />
+    <Compile Include="Menu\Actions\Launch\LaunchActionOptions.cs" />
+    <Compile Include="Menu\Actions\Navigation\NavigationActionBuilder.cs" />
+    <Compile Include="Menu\Actions\Navigation\NavigationActionOptions.cs" />
     <Compile Include="Menu\Loaders\IMenuLoader.cs" />
     <Compile Include="Menu\Loaders\Json\JsonAction.cs" />
+    <Compile Include="Menu\Loaders\Json\JsonActionConverter.cs" />
     <Compile Include="Menu\Loaders\Json\JsonMenuConfiguration.cs" />
     <Compile Include="Menu\Loaders\Json\JsonMenuItem.cs" />
     <Compile Include="Menu\Loaders\Json\JsonMenuLoader.cs" />
@@ -116,9 +124,13 @@
     <Compile Include="Services\KeyboardInputHandler.cs" />
     <Compile Include="View\Components\Component.cs" />
     <Compile Include="View\Menu\MenuPanel.cs" />
-    <Compile Include="View\Menu\MenuContainerControl.cs" />
+    <Compile Include="View\Menu\MenuContainerControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\Menu\MenuItem.cs" />
-    <Compile Include="View\Menu\MenuItemControl.cs" />
+    <Compile Include="View\Menu\MenuItemControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <EmbeddedResource Include="Overlay.resx">
       <DependentUpon>Overlay.cs</DependentUpon>
     </EmbeddedResource>
@@ -150,13 +162,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Menu" />
-    <Folder Include="Menu\Actions" />
-    <Folder Include="Menu\Loaders\Json" />
-    <Folder Include="Services" />
-    <Folder Include="View\Menu" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

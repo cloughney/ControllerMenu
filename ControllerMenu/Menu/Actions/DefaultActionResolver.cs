@@ -14,10 +14,10 @@ namespace ControllerMenu.Menu.Actions
             IEnumerable<IActionBuilder> actionBuilders)
         {
             this.context = context;
-            this.registeredActionBuilders = actionBuilders.ToDictionary(k => k.Type);
+            this.registeredActionBuilders = actionBuilders.ToDictionary(k => k.Type, StringComparer.OrdinalIgnoreCase);
         }
 
-        public Action Resolve(string actionType, object options)
+        public Action Resolve(string actionType, IActionOptions options)
         {
             IActionBuilder builder;
             return this.registeredActionBuilders.TryGetValue(actionType, out builder)

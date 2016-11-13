@@ -24,19 +24,25 @@ namespace ControllerMenu.Menu.Loaders.Json
 		    foreach (var menuItemEntry in config.MenuItems)
 		    {
 		        var title = menuItemEntry.Title;
-		        var action = this.actionResolver.Resolve(menuItemEntry.Action.Type, menuItemEntry.Action.Options);
 
-		        if (action == null)
-		        {
-		            //TODO error handling
-		            continue;
-		        }
+			    foreach (var actionEntry in menuItemEntry.Actions)
+			    {
+					var actionType = actionEntry.Type;
+					var actionOptions = actionEntry.Options;
+					var action = this.actionResolver.Resolve(actionType, actionOptions);
 
-		        menuContainer.MenuItems.Add(new MenuItem
-		        {
-		            Title = title,
-		            Action = new MenuAction(action)
-		        });
+					if (action == null)
+					{
+						//TODO error handling
+						continue;
+					}
+
+					menuContainer.MenuItems.Add(new MenuItem
+					{
+						Title = title,
+						Action = new MenuAction(action)
+					});
+				}
 		    }
 
             return menuContainer;

@@ -1,9 +1,13 @@
+using ControllerMenu.Menu.Actions;
+using Newtonsoft.Json;
+
 namespace ControllerMenu.Menu.Loaders.Json
 {
-    public class JsonAction
+	[JsonConverter(typeof(JsonActionConverter))]
+	public class JsonAction
     {
         public string Type { get; set; }
 
-        public object Options { get; set; }
+        public IActionOptions Options { get; set; }
     }
 }

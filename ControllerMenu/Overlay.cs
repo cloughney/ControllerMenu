@@ -74,7 +74,8 @@ namespace ControllerMenu
 
 		private async void SetupWindow()
 		{
-			this.TopMost = true;
+			this.TopMost = false;
+
 			this.FormBorderStyle = FormBorderStyle.None;
 			this.WindowState = FormWindowState.Maximized;
 			this.BackColor = Color.FromArgb(16, 16, 16);
@@ -109,13 +110,13 @@ namespace ControllerMenu
 
 			var primaryMenuPanel = new Panel
 			{
-				Size = new Size(Convert.ToInt32(this.Width * 0.25), panelHeight),
+				Size = new Size(Convert.ToInt32(this.Width * 0.34), panelHeight),
 				Dock = DockStyle.Left
 			};
 
 			var secondaryMenuPanel = new Panel
 			{
-				Size = new Size(Convert.ToInt32(this.Width * 0.75), panelHeight),
+				Size = new Size(Convert.ToInt32(this.Width * 0.66), panelHeight),
 				Dock = DockStyle.Right
 			};
 			
