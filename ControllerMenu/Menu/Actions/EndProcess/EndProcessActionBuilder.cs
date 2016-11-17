@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ControllerMenu.Menu.Actions.EndProcess
 {
@@ -19,20 +21,30 @@ namespace ControllerMenu.Menu.Actions.EndProcess
 			{
 				return () =>
 				{
-					foreach (var p in Process.GetProcessesByName(endOptions.ProcessName))
+					var runningProcesses = Process.GetProcessesByName(endOptions.ProcessName);
+					foreach (var p in runningProcesses)
 					{
 						p.Kill();
 					}
 				};
 			}
 
-			//if (!String.IsNullOrWhiteSpace(endOptions.WindowTitle))
-			//{
-			//	return () =>
-			//	{
-					
-			//	};
-			//}
+			if (!String.IsNullOrWhiteSpace(endOptions.WindowTitle))
+			{
+				return () =>
+				{
+					var runningProcesses = Process.GetProcesses();
+					foreach (var process in runningProcesses)
+					{
+						if (!Regex.IsMatch(process.MainWindowTitle, endOptions.WindowTitle))
+						{
+							continue;
+						}
+
+						process.Kill();
+					}
+				};
+			}
 
 			throw new Exception("Invalid options for close action"); //TODO proper error handling
 		}

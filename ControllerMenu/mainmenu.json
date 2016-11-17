@@ -1,7 +1,7 @@
 {
 	"menuItems": [
 		{
-			"title": "Test",
+			"title": "Leave",
 			"actions": [
 				{
 					"type": "navigation",
@@ -14,7 +14,20 @@
 			]
 		},
 		{
-			"title": "Steam",
+			"title": "Close",
+			"actions": [
+				{
+					"type": "close",
+					"options": {
+						"processName": "chrome",
+						"windowTitle":  ".*", 
+						"closeAfter": true  
+					}
+				}
+			]
+		},
+		{
+			"title": "Launch",
 			"actions": [
 				{
 					"type": "launch",

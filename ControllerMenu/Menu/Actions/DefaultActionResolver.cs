@@ -20,9 +20,23 @@ namespace ControllerMenu.Menu.Actions
         public Action Resolve(string actionType, IActionOptions options)
         {
             IActionBuilder builder;
-            return this.registeredActionBuilders.TryGetValue(actionType, out builder)
-                ? builder.Build(this.context, options)
-                : null;
+	        if (!this.registeredActionBuilders.TryGetValue(actionType, out builder))
+	        {
+		        return null;
+			}
+
+	        var resolvedAction = builder.Build(this.context, options);
+			
+			if (options.CloseAfter)
+			{
+				return () =>
+				{
+					resolvedAction.Invoke();
+					this.context.Overlay.Close();
+				};
+			}
+
+			return resolvedAction;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Autofac;
 using ControllerMenu.Menu.Actions;
+using ControllerMenu.Menu.Actions.EndProcess;
 using ControllerMenu.Menu.Actions.Launch;
 using ControllerMenu.Menu.Actions.Navigation;
 using ControllerMenu.Menu.Loaders;
@@ -49,6 +50,7 @@ namespace ControllerMenu
 		    builder.RegisterType<DefaultActionResolver>().As<IActionResolver>().SingleInstance();
 		    builder.RegisterType<NavigationActionBuilder>().As<IActionBuilder>();
 			builder.RegisterType<LaunchActionBuilder>().As<IActionBuilder>();
+			builder.RegisterType<EndProcessActionBuilder>().As<IActionBuilder>();
 
 			builder.RegisterType<ApplicationContext>().As<IApplicationContext>().SingleInstance();
 

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using ControllerMenu.Menu.Actions;
+using ControllerMenu.Menu.Actions.EndProcess;
 using ControllerMenu.Menu.Actions.Launch;
 using ControllerMenu.Menu.Actions.Navigation;
 using Newtonsoft.Json;
@@ -37,6 +38,9 @@ namespace ControllerMenu.Menu.Loaders.Json
 					break;
 				case "launch":
 					options = new LaunchActionOptions();
+					break;
+				case "close":
+					options = new EndProcessActionOptions();
 					break;
 			}
 

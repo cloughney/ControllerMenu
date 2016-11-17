@@ -19,10 +19,6 @@ namespace ControllerMenu.Menu.Actions.Launch
 			{
 				Process.Start(launchOptions.Path, launchOptions.Arguments);
 				//TODO waitForExit
-				if (launchOptions.CloseAfter)
-				{
-					context.Overlay.Close();
-				}
 			};
 		}
 	}
