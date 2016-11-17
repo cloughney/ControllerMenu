@@ -29,22 +29,24 @@ namespace ControllerMenu.Menu.Actions.EndProcess
 				};
 			}
 
-			if (!String.IsNullOrWhiteSpace(endOptions.WindowTitle))
-			{
-				return () =>
-				{
-					var runningProcesses = Process.GetProcesses();
-					foreach (var process in runningProcesses)
-					{
-						if (!Regex.IsMatch(process.MainWindowTitle, endOptions.WindowTitle))
-						{
-							continue;
-						}
+			//TODO create check for visible window before uncommenting this
+			//if (!String.IsNullOrWhiteSpace(endOptions.WindowTitle))
+			//{
+			//	return () =>
+			//	{
+			//		var runningProcesses = Process.GetProcesses();
+			//		foreach (var process in runningProcesses)
+			//		{
+						
+			//			if (!Regex.IsMatch(process.MainWindowTitle, endOptions.WindowTitle))
+			//			{
+			//				continue;
+			//			}
 
-						process.Kill();
-					}
-				};
-			}
+			//			process.CloseMainWindow();
+			//		}
+			//	};
+			//}
 
 			throw new Exception("Invalid options for close action"); //TODO proper error handling
 		}
