@@ -1,4 +1,6 @@
-﻿namespace ControllerMenu
+﻿using ControllerMenu.View;
+
+namespace ControllerMenu
 {
     public class ApplicationContext : IApplicationContext
     {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using ControllerMenu.Menu.Actions.Launch;
 
-namespace ControllerMenu.Menu.Actions.Navigation
+namespace ControllerMenu.Actions.Navigation
 {
 	public class NavigationActionOptions : ActionOptions
 	{

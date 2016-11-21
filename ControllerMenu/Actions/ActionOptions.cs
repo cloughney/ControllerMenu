@@ -1,4 +1,4 @@
-namespace ControllerMenu.Menu.Actions
+namespace ControllerMenu.Actions
 {
 	public abstract class ActionOptions : IActionOptions
 	{

@@ -1,9 +1,7 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
 
-namespace ControllerMenu.Menu.Actions.EndProcess
+namespace ControllerMenu.Actions.EndProcess
 {
 	public class EndProcessActionBuilder : IActionBuilder
 	{

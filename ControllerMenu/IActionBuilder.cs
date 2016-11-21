@@ -1,5 +1,5 @@
 using System;
-using ControllerMenu.Menu.Actions;
+using ControllerMenu.Actions;
 
 namespace ControllerMenu
 {

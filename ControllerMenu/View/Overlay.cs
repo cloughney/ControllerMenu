@@ -6,12 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ControllerMenu.Input;
+using ControllerMenu.Input.Models;
 using ControllerMenu.Menu.Loaders;
 using ControllerMenu.Menu.Models;
 using ControllerMenu.Services;
 using ControllerMenu.View.Menu;
 
-namespace ControllerMenu
+namespace ControllerMenu.View
 {
 	public partial class Overlay : Form
 	{

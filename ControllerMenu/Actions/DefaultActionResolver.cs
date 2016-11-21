@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ControllerMenu.Menu.Actions
+namespace ControllerMenu.Actions
 {
     public class DefaultActionResolver : IActionResolver
     {

@@ -1,10 +1,10 @@
-using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ControllerMenu.Input.Models;
 
-namespace ControllerMenu.Input.Joystick
+namespace ControllerMenu.Input.Controller
 {
 	public class ControllerInputHandler : IInputHandler
 	{
@@ -16,12 +16,18 @@ namespace ControllerMenu.Input.Joystick
 
 	    [DllImport("xinput1_4.dll")]
 	    private static extern int XInputSetState(int deviceIndex, ref XInputVibration vibration);
+//
+//	    [DllImport("xinput1_4.dll")]
+//	    private static extern int XInputGetKeystroke(int deviceIndex, int reserved, ref XInputKeystroke keystroke);
 
-	    [DllImport("xinput1_4.dll")]
+        [DllImport("xinput1_4.dll")]
 	    private static extern int XInputGetCapabilities(int deviceIndex, int flags, ref XInputCapabilities capabilities);
 
 	    [DllImport("xinput1_4.dll")]
 	    private static extern int XInputGetBatteryInformation(int deviceIndex, byte deviceType, ref XInputBatteryInformation batteryInformation);
+
+	    [DllImport("xinput1_4.dll")]
+	    private static extern int XInputPowerOffController(int deviceIndex);
 
 	    private CancellationTokenSource controllerWatchCancellationSource;
 
@@ -292,4 +298,13 @@ namespace ControllerMenu.Input.Joystick
         [FieldOffset(1)]
         public byte BatteryLevel;
     }
+
+//    [StructLayout(LayoutKind.Explicit)]
+//    public struct XInputKeystroke {
+//        public short VirtualKey;
+//        public char Unicode;
+//        public short Flags;
+//        public byte UserIndex;
+//        public byte HidCode;
+//    }
 }

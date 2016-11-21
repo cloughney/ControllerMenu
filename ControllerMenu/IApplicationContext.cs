@@ -1,3 +1,5 @@
+using ControllerMenu.View;
+
 namespace ControllerMenu
 {
     public interface IApplicationContext

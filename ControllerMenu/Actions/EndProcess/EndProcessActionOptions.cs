@@ -1,4 +1,4 @@
-﻿namespace ControllerMenu.Menu.Actions.EndProcess
+﻿namespace ControllerMenu.Actions.EndProcess
 {
 	public class EndProcessActionOptions : ActionOptions
 	{

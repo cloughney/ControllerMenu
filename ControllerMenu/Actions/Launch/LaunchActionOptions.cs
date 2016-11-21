@@ -1,4 +1,4 @@
-namespace ControllerMenu.Menu.Actions.Launch
+namespace ControllerMenu.Actions.Launch
 {
 	public class LaunchActionOptions : ActionOptions
 	{

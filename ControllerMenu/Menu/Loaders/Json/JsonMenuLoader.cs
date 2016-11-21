@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ControllerMenu.Menu.Actions;
-using ControllerMenu.Menu.Actions.Navigation;
+using ControllerMenu.Actions;
+using ControllerMenu.Actions.Navigation;
 using ControllerMenu.Menu.Models;
 using Newtonsoft.Json;
 

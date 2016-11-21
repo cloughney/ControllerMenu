@@ -1,5 +1,5 @@
 using System.Windows.Forms;
-using ControllerMenu.Services;
+using ControllerMenu.Input.Models;
 
 namespace ControllerMenu.Input.Keyboard
 {

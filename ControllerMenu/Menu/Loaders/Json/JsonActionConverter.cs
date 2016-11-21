@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using ControllerMenu.Menu.Actions;
-using ControllerMenu.Menu.Actions.EndProcess;
-using ControllerMenu.Menu.Actions.Launch;
-using ControllerMenu.Menu.Actions.Navigation;
+using ControllerMenu.Actions;
+using ControllerMenu.Actions.EndProcess;
+using ControllerMenu.Actions.Launch;
+using ControllerMenu.Actions.Navigation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Windows.Forms;
 using Autofac;
+using ControllerMenu.Actions;
+using ControllerMenu.Actions.EndProcess;
+using ControllerMenu.Actions.Launch;
+using ControllerMenu.Actions.Navigation;
 using ControllerMenu.Input;
-using ControllerMenu.Input.Joystick;
+using ControllerMenu.Input.Controller;
 using ControllerMenu.Input.Keyboard;
-using ControllerMenu.Menu.Actions;
-using ControllerMenu.Menu.Actions.EndProcess;
-using ControllerMenu.Menu.Actions.Launch;
-using ControllerMenu.Menu.Actions.Navigation;
+using ControllerMenu.Input.Models;
 using ControllerMenu.Menu.Loaders;
 using ControllerMenu.Menu.Loaders.Json;
 using ControllerMenu.Services;
+using ControllerMenu.View;
 
 namespace ControllerMenu
 {

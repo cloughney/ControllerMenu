@@ -1,4 +1,4 @@
-﻿namespace ControllerMenu
+﻿namespace ControllerMenu.View
 {
 	partial class Overlay
 	{

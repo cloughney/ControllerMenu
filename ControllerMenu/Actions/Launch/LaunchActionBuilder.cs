@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace ControllerMenu.Menu.Actions.Launch
+namespace ControllerMenu.Actions.Launch
 {
 	public class LaunchActionBuilder : IActionBuilder
 	{

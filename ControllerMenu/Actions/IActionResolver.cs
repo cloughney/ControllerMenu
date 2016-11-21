@@ -1,6 +1,6 @@
 using System;
 
-namespace ControllerMenu.Menu.Actions
+namespace ControllerMenu.Actions
 {
     public interface IActionResolver
     {

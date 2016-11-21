@@ -1,4 +1,4 @@
-using ControllerMenu.Menu.Actions;
+using ControllerMenu.Actions;
 using Newtonsoft.Json;
 
 namespace ControllerMenu.Menu.Loaders.Json

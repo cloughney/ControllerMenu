@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 
-namespace ControllerMenu.Menu.Actions.Navigation
+namespace ControllerMenu.Actions.Navigation
 {
     public class NavigationActionBuilder : IActionBuilder
     {
