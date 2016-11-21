@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 using Autofac;
+using ControllerMenu.Input;
+using ControllerMenu.Input.Joystick;
+using ControllerMenu.Input.Keyboard;
 using ControllerMenu.Menu.Actions;
 using ControllerMenu.Menu.Actions.EndProcess;
 using ControllerMenu.Menu.Actions.Launch;
@@ -42,8 +45,9 @@ namespace ControllerMenu
 			builder.RegisterType<JsonMenuLoader>().As<IMenuLoader>().SingleInstance();
 
 			builder.RegisterType<KeyboardInputHandler>().As<IInputHandler>().SingleInstance();
+		    builder.RegisterType<ControllerInputHandler>().As<IInputHandler>().SingleInstance();
 
-			builder.RegisterType<ActiveWindowService>().As<IActiveWindowService>().SingleInstance();
+		    builder.RegisterType<ActiveWindowService>().As<IActiveWindowService>().SingleInstance();
 
 		    builder.RegisterType<JsonMenuLoader>().As<IMenuLoader>().SingleInstance();
 

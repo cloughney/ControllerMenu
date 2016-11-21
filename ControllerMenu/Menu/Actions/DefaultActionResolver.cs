@@ -26,16 +26,6 @@ namespace ControllerMenu.Menu.Actions
 			}
 
 	        var resolvedAction = builder.Build(this.context, options);
-			
-			if (options.CloseAfter)
-			{
-				return () =>
-				{
-					resolvedAction.Invoke();
-					this.context.Overlay.Close();
-				};
-			}
-
 			return resolvedAction;
         }
     }

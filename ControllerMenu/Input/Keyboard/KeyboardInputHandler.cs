@@ -1,13 +1,17 @@
 using System.Windows.Forms;
+using ControllerMenu.Services;
 
-namespace ControllerMenu.Services
+namespace ControllerMenu.Input.Keyboard
 {
 	public class KeyboardInputHandler : IInputHandler
 	{
+	    private Control parentControl;
+
 		public event InputEventHandler InputDetected;
 
 		public void Listen(Control parent)
 		{
+		    this.parentControl = parent;
 			parent.KeyDown += this.OnKeyDown;
 		}
 
@@ -37,5 +41,13 @@ namespace ControllerMenu.Services
 					break;
 			}
 		}
+
+	    public void Dispose()
+	    {
+	        if (this.parentControl != null)
+	        {
+	            this.parentControl.KeyDown -= this.OnKeyDown;
+	        }
+	    }
 	}
 }

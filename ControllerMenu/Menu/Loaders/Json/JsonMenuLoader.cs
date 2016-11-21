@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using ControllerMenu.Menu.Actions;
+using ControllerMenu.Menu.Actions.Navigation;
 using ControllerMenu.Menu.Models;
 using Newtonsoft.Json;
 
@@ -12,18 +15,25 @@ namespace ControllerMenu.Menu.Loaders.Json
 	    public JsonMenuLoader(IActionResolver actionResolver)
 	    {
 	        this.actionResolver = actionResolver;
+
+	        //todo there must be a better way
+	        this.CloseAction = this.actionResolver.Resolve("Navigation",
+	            new NavigationActionOptions { Operations = new List<string> { "exit" }});
 	    }
+
+        private Action CloseAction { get; set; }
 
 		public IMenuContainer Load(string menuName)
         {
             var menuContainer = new MenuContainer();
 
-			var configRaw = File.ReadAllText($"{menuName}.json");
+            var configRaw = File.ReadAllText($"{menuName}.json");
 		    var config = JsonConvert.DeserializeObject<JsonMenuConfiguration>(configRaw);
 
 		    foreach (var menuItemEntry in config.MenuItems)
 		    {
 		        var title = menuItemEntry.Title;
+		        Action menuAction = null;
 
 			    foreach (var actionEntry in menuItemEntry.Actions)
 			    {
@@ -37,12 +47,26 @@ namespace ControllerMenu.Menu.Loaders.Json
 						continue;
 					}
 
-					menuContainer.MenuItems.Add(new MenuItem
-					{
-						Title = title,
-						Action = new MenuAction(action)
-					});
+			        if (actionOptions.CloseAfter)
+			        {
+			            action += this.CloseAction;
+			        }
+
+			        if (menuAction == null)
+			        {
+			            menuAction = action;
+			        }
+			        else
+			        {
+			            menuAction += action;
+			        }
 				}
+
+		        menuContainer.MenuItems.Add(new MenuItem
+		        {
+		            Title = title,
+		            Action = new MenuAction(menuAction)
+		        });
 		    }
 
             return menuContainer;

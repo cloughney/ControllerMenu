@@ -15,21 +15,31 @@ namespace ControllerMenu.Menu.Actions.Navigation
 		        throw new Exception("Invalid options for navigation action"); //TODO proper error handling
 	        }
 
-			var actionQueue = new Queue<Action>();
+            Action navigationActions = null;
 
 	        foreach (var operation in navOptions.Operations)
 	        {
+	            Action operationAction;
 		        switch (operation.ToLower())
 		        {
 					case "exit":
-						actionQueue.Enqueue(() => context.Overlay.Close());
+						operationAction = () => context.Overlay.Close();
 				        break;
 					default:
 						throw new Exception("Invalid operation configured for navigation action"); //TODO proper error handling
 				}
+
+	            if (navigationActions == null)
+	            {
+	                navigationActions = operationAction;
+	            }
+	            else
+	            {
+	                navigationActions += operationAction;
+	            }
 	        }
 
-	        return () => { foreach (var action in actionQueue) action.Invoke(); };
+	        return navigationActions;
         }
     }
 }

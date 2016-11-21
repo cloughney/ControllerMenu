@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ControllerMenu.Input;
 using ControllerMenu.Menu.Loaders;
 using ControllerMenu.Menu.Models;
 using ControllerMenu.Services;
@@ -72,7 +74,17 @@ namespace ControllerMenu
 			this.SetupWindow();
 		}
 
-		private async void SetupWindow()
+	    protected override void OnClosing(CancelEventArgs e)
+	    {
+	        foreach (var inputHandler in this.inputHandlers)
+	        {
+	            inputHandler.Dispose();
+	        }
+
+	        base.OnClosing(e);
+	    }
+
+	    private async void SetupWindow()
 		{
 			this.TopMost = false;
 

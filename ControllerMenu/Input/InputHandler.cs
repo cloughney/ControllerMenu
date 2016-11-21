@@ -1,6 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
-namespace ControllerMenu.Services
+namespace ControllerMenu.Input
 {
 	public delegate void InputEventHandler(IInputHandler handler, InputType input);
 
@@ -12,7 +13,7 @@ namespace ControllerMenu.Services
 		Back
 	}
 
-	public interface IInputHandler
+	public interface IInputHandler : IDisposable
 	{
 		event InputEventHandler InputDetected;
 
