@@ -160,6 +160,10 @@ namespace ControllerMenu.View
 		{
 			switch (input)
 			{
+                case InputType.Menu:
+			        this.ToggleOverlay();
+			        break;
+
 				case InputType.Back:
 					if (this.activeMenuContainer == this.primaryMenuContainer)
 					{
@@ -185,6 +189,11 @@ namespace ControllerMenu.View
 					break;
 			}
 		}
+
+	    private void ToggleOverlay()
+	    {
+	        this.Visible = !this.Visible;
+	    }
 
 		private void CloseSecondContainer()
 		{

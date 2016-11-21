@@ -97,6 +97,11 @@ namespace ControllerMenu.Input.Controller
 
 	    private static InputType? GetInputTypeFromStateChanges(XInputGamepad previousState, XInputGamepad currentState)
 	    {
+	        if (!previousState.IsButtonPressed((int) GamepadButton.XINPUT_GAMEPAD_START) && currentState.IsButtonPressed((int) GamepadButton.XINPUT_GAMEPAD_START))
+	        {
+	            return InputType.Menu;
+	        }
+
 	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_UP) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_UP))
 	        {
 	            return InputType.PreviousItem;
