@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Windows.Forms;
 using ControllerMenu.Input.Models;
 
@@ -6,10 +7,25 @@ namespace ControllerMenu.Input.Keyboard
 	public class KeyboardInputHandler : IInputHandler
 	{
 	    private Control parentControl;
+	    private readonly List<InputType> activeInputTypes;
 
-		public event InputEventHandler InputDetected;
+	    public KeyboardInputHandler()
+	    {
+	        this.activeInputTypes = new List<InputType>();
+	    }
 
-		public void Listen(Control parent)
+	    public event InputEventHandler InputDetected;
+
+	    public IList<InputType> ActiveInputs
+	    {
+	        set
+	        {
+	            this.activeInputTypes.Clear();
+	            this.activeInputTypes.AddRange(value);
+	        }
+	    }
+
+	    public void Listen(Control parent, IList<InputType> initialInputTypes)
 		{
 		    this.parentControl = parent;
 			parent.KeyDown += this.OnKeyDown;
@@ -21,6 +37,8 @@ namespace ControllerMenu.Input.Keyboard
 			{
 				return;
 			}
+
+		    //TODO listen to active inputs?
 
 			switch (e.KeyCode)
 			{

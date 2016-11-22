@@ -46,8 +46,8 @@ namespace ControllerMenu
 			builder.RegisterType<FontService>().As<IFontService>().SingleInstance();
 			builder.RegisterType<JsonMenuLoader>().As<IMenuLoader>().SingleInstance();
 
-			builder.RegisterType<KeyboardInputHandler>().As<IInputHandler>().SingleInstance();
-		    builder.RegisterType<ControllerInputHandler>().As<IInputHandler>().SingleInstance();
+			builder.RegisterType<KeyboardInputHandler>().As<IInputHandler>().InstancePerDependency();
+		    builder.RegisterType<ControllerInputHandler>().As<IInputHandler>().InstancePerDependency();
 
 		    builder.RegisterType<ActiveWindowService>().As<IActiveWindowService>().SingleInstance();
 

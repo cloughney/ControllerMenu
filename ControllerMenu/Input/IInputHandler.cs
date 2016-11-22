@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using ControllerMenu.Input.Models;
 
@@ -10,6 +11,8 @@ namespace ControllerMenu.Input
 	{
 		event InputEventHandler InputDetected;
 
-		void Listen(Control parent);
+	    IList<InputType> ActiveInputs { set; }
+
+	    void Listen(Control parent, IList<InputType> initialInputTypes);
 	}
 }

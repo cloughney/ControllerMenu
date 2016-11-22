@@ -52,7 +52,38 @@ namespace ControllerMenu.View
 			this.activeMenuContainer = this.primaryMenuContainer;
 		}
 
-		protected override bool IsInputKey(Keys keyData)
+	    public void ToggleOverlay()
+	    {
+	        FormWindowState windowState;
+	        List<InputType> activeInputTypes;
+
+	        if (this.WindowState == FormWindowState.Maximized)
+	        {
+	            windowState = FormWindowState.Minimized;
+	            activeInputTypes = new List<InputType> { InputType.Menu };
+	        }
+	        else
+	        {
+	            windowState = FormWindowState.Maximized;
+	            activeInputTypes = new List<InputType>
+	            {
+	                InputType.Menu,
+	                InputType.PreviousItem,
+	                InputType.NextItem,
+	                InputType.SelectItem,
+	                InputType.Back
+	            };
+	        }
+
+	        foreach (var inputHandler in this.inputHandlers)
+	        {
+	            inputHandler.ActiveInputs = activeInputTypes;
+	        }
+
+	        this.WindowState = windowState;
+	    }
+
+	    protected override bool IsInputKey(Keys keyData)
 		{
 			switch (keyData)
 			{
@@ -85,37 +116,44 @@ namespace ControllerMenu.View
 	        base.OnClosing(e);
 	    }
 
-	    private async void SetupWindow()
+	    private void SetupWindow()
 		{
 			this.TopMost = false;
+		    this.ShowInTaskbar = false;
+		    this.WindowState = FormWindowState.Maximized;
 
 			this.FormBorderStyle = FormBorderStyle.None;
-			this.WindowState = FormWindowState.Maximized;
 			this.BackColor = Color.FromArgb(16, 16, 16);
-			this.Opacity = 0.0;
+		    this.Opacity = MaxOpacityValue;
 
-			await this.FadeIn();
-
-			this.RenderMenu();
+		    this.RenderMenu();
 			this.PopulateMenu("mainmenu"); //TODO string class enum thingy for menu names?
 
 		    foreach (var inputHandler in this.inputHandlers)
 			{
-				inputHandler.Listen(this);
+				inputHandler.Listen(this, new List<InputType>
+				{
+				    InputType.Menu,
+				    InputType.PreviousItem,
+				    InputType.NextItem,
+				    InputType.SelectItem,
+				    InputType.Back
+				});
+
 				inputHandler.InputDetected += this.OnInputRecieved;
 			}
 		}
 
-		private async Task FadeIn()
-		{
-			while (this.Opacity < MaxOpacityValue)
-			{
-				await Task.Delay(10);
-				this.Opacity += 0.05;
-			}
-
-			this.Opacity = MaxOpacityValue;
-		}
+//		private async Task FadeIn()
+//		{
+//			while (this.Opacity < MaxOpacityValue)
+//			{
+//				await Task.Delay(10);
+//				this.Opacity += 0.05;
+//			}
+//
+//		    this.Opacity = MaxOpacityValue;
+//		}
 
 		private void RenderMenu()
 		{
@@ -150,7 +188,7 @@ namespace ControllerMenu.View
 		        .Select(menuItem => new View.Menu.MenuItem(menuItem.Title, menuItem.Action))
 		        .ToList();
 
-		    var exitItem = new View.Menu.MenuItem("Exit", new MenuAction(this.Close));
+		    var exitItem = new View.Menu.MenuItem("Exit", new MenuAction(this.ToggleOverlay));
 		    menuItems.Add(exitItem);
 
 		    this.primaryMenuContainer.MenuItems = menuItems;
@@ -165,13 +203,9 @@ namespace ControllerMenu.View
 			        break;
 
 				case InputType.Back:
-					if (this.activeMenuContainer == this.primaryMenuContainer)
+					if (this.activeMenuContainer != this.primaryMenuContainer)
 					{
-						this.Close();
-					}
-					else
-					{
-						this.CloseSecondContainer();
+					    this.CloseSecondContainer();
 					}
 
 					break;
@@ -189,11 +223,6 @@ namespace ControllerMenu.View
 					break;
 			}
 		}
-
-	    private void ToggleOverlay()
-	    {
-	        this.Visible = !this.Visible;
-	    }
 
 		private void CloseSecondContainer()
 		{

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,22 +31,52 @@ namespace ControllerMenu.Input.Controller
 	    [DllImport("xinput1_4.dll")]
 	    private static extern int XInputPowerOffController(int deviceIndex);
 
-	    private CancellationTokenSource controllerWatchCancellationSource;
+	    private static readonly Dictionary<InputType, Func<XInputGamepad, XInputGamepad, InputType?>> GamepadStateChangeDetectorMap = new Dictionary<InputType, Func<XInputGamepad, XInputGamepad, InputType?>>
+	    {
+	        { InputType.Menu, CheckForMenuInput },
+	        { InputType.PreviousItem, CheckForPreviousItemInput },
+	        { InputType.NextItem, CheckForNextItemInput },
+	        { InputType.SelectItem, CheckForSelectItemInput },
+	        { InputType.Back, CheckForBackInput },
+	    };
+
+	    private readonly List<InputType> activeInputTypes;
+	    private CancellationTokenSource cancellationSource;
+
+	    public ControllerInputHandler()
+	    {
+	        this.activeInputTypes = new List<InputType>();
+	    }
 
 	    public event InputEventHandler InputDetected;
 
-		public void Listen(Control parent)
-		{
-		    //todo add check to prevent multiple calls to this
+	    public IList<InputType> ActiveInputs
+	    {
+	        set
+	        {
+	            this.activeInputTypes.Clear();
+	            this.activeInputTypes.AddRange(value);
+	        }
+	    }
 
-		    this.controllerWatchCancellationSource = new CancellationTokenSource();
-		    var token = this.controllerWatchCancellationSource.Token;
+		public void Listen(Control parent, IList<InputType> initialInputTypes)
+		{
+		    this.ActiveInputs = initialInputTypes;
+
+		    if (this.cancellationSource != null && !this.cancellationSource.IsCancellationRequested)
+		    {
+		        //we're already listening
+		        return;
+		    }
+
+		    this.cancellationSource = new CancellationTokenSource();
+		    var token = this.cancellationSource.Token;
 		    Task.Factory.StartNew(() => this.WatchControllerState(token), token);
 		}
 
 	    public void Dispose()
 	    {
-	        this.controllerWatchCancellationSource.Cancel();
+	        this.cancellationSource.Cancel();
 	    }
 
 	    private void WatchControllerState(CancellationToken cancellationToken)
@@ -82,7 +114,7 @@ namespace ControllerMenu.Input.Controller
 	                    continue;
 	                }
 
-	                // ReSharper disable once PossibleNullReferenceException - loop is skipped if there are no subscribers
+	                //this.PulseVibration(deviceIndex, 200);
 	                this.InputDetected(this, inputType.Value);
 	            }
 
@@ -95,41 +127,17 @@ namespace ControllerMenu.Input.Controller
 	        }
 	    }
 
-	    private static InputType? GetInputTypeFromStateChanges(XInputGamepad previousState, XInputGamepad currentState)
+	    private InputType? GetInputTypeFromStateChanges(XInputGamepad previousState, XInputGamepad currentState)
 	    {
-	        if (!previousState.IsButtonPressed((int) GamepadButton.XINPUT_GAMEPAD_START) && currentState.IsButtonPressed((int) GamepadButton.XINPUT_GAMEPAD_START))
+	        foreach (var activeInputType in this.activeInputTypes)
 	        {
-	            return InputType.Menu;
-	        }
+	            var stateChangeDetector = GamepadStateChangeDetectorMap[activeInputType];
+	            var inputType = stateChangeDetector(previousState, currentState);
 
-	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_UP) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_UP))
-	        {
-	            return InputType.PreviousItem;
-	        }
-
-	        if (previousState.sThumbLY < 8000 && currentState.sThumbLY >= 8000)
-	        {
-	            return InputType.PreviousItem;
-	        }
-
-	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_DOWN) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_DOWN))
-	        {
-	            return InputType.NextItem;
-	        }
-
-	        if (previousState.sThumbLY > -8000 && currentState.sThumbLY <= -8000)
-	        {
-	            return InputType.NextItem;
-	        }
-
-	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_A) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_A))
-	        {
-	            return InputType.SelectItem;
-	        }
-
-	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_B) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_B))
-	        {
-	            return InputType.Back;
+	            if (inputType.HasValue)
+	            {
+	                return inputType;
+	            }
 	        }
 
 	        return null;
@@ -144,6 +152,69 @@ namespace ControllerMenu.Input.Controller
 
 	        vibration.LeftMotorSpeed = 0;
 	        XInputSetState(deviceIndex, ref vibration);
+	    }
+
+	    private static InputType? CheckForMenuInput(XInputGamepad previousState, XInputGamepad currentState)
+	    {
+	        const int buttonCombo =
+	            (short) GamepadButton.XINPUT_GAMEPAD_LEFT_SHOULDER |
+	            (short) GamepadButton.XINPUT_GAMEPAD_RIGHT_SHOULDER |
+	            (short) GamepadButton.XINPUT_GAMEPAD_START;
+
+	        var comboWasPressed = previousState.wButtons == buttonCombo;
+	        var comboIsPressed = currentState.wButtons == buttonCombo;
+
+	        return !comboWasPressed && comboIsPressed ? InputType.Menu : null as InputType?;
+	    }
+
+	    private static InputType? CheckForPreviousItemInput(XInputGamepad previousState, XInputGamepad currentState)
+	    {
+	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_UP) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_UP))
+	        {
+	            return InputType.PreviousItem;
+	        }
+
+	        if (previousState.sThumbLY < 8000 && currentState.sThumbLY >= 8000)
+	        {
+	            return InputType.PreviousItem;
+	        }
+
+	        return null;
+	    }
+
+	    private static InputType? CheckForNextItemInput(XInputGamepad previousState, XInputGamepad currentState)
+	    {
+	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_DOWN) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_DPAD_DOWN))
+	        {
+	            return InputType.NextItem;
+	        }
+
+	        if (previousState.sThumbLY > -8000 && currentState.sThumbLY <= -8000)
+	        {
+	            return InputType.NextItem;
+	        }
+
+	        return null;
+	    }
+
+	    private static InputType? CheckForSelectItemInput(XInputGamepad previousState, XInputGamepad currentState)
+	    {
+	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_A) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_A))
+	        {
+	            return InputType.SelectItem;
+	        }
+
+	        return null;
+	    }
+
+	    private static InputType? CheckForBackInput(XInputGamepad previousState, XInputGamepad currentState)
+	    {
+	        if (!previousState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_B) && currentState.IsButtonPressed((int)GamepadButton.XINPUT_GAMEPAD_B))
+	        {
+	            return InputType.Back;
+	        }
+
+	        return null;
 	    }
 	}
 

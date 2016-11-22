@@ -22,7 +22,7 @@ namespace ControllerMenu.Actions.Navigation
 		        switch (operation.ToLower())
 		        {
 					case "exit":
-						operationAction = () => context.Overlay.Close();
+						operationAction = () => context.Overlay.ToggleOverlay();
 				        break;
 					default:
 						throw new Exception("Invalid operation configured for navigation action"); //TODO proper error handling
