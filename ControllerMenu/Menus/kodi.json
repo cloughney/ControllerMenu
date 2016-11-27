@@ -1,0 +1,17 @@
+﻿{
+	"menuItems": [
+		{
+			"title": "Do Kodi stuff",
+			"actions": [
+				{
+					"type": "navigation",
+					"options": {
+						"operations": [
+							"exit"
+						]
+					}
+				}
+			]
+		}
+	]
+}

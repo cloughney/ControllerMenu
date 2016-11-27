@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace ControllerMenu.Actions.EndProcess
 {
@@ -26,25 +27,28 @@ namespace ControllerMenu.Actions.EndProcess
 					}
 				};
 			}
-
-			//TODO create check for visible window before uncommenting this
+			
 			//if (!String.IsNullOrWhiteSpace(endOptions.WindowTitle))
-			//{
-			//	return () =>
 			//	{
-			//		var runningProcesses = Process.GetProcesses();
-			//		foreach (var process in runningProcesses)
+			//		return () =>
 			//		{
-						
-			//			if (!Regex.IsMatch(process.MainWindowTitle, endOptions.WindowTitle))
+			//			var runningProcesses = Process.GetProcesses();
+			//			foreach (var process in runningProcesses)
 			//			{
-			//				continue;
-			//			}
+			//				if (process.MainWindowHandle == IntPtr.Zero || String.IsNullOrWhiteSpace(process.MainWindowTitle))
+			//				{
+			//					continue;
+			//				}
 
-			//			process.CloseMainWindow();
-			//		}
-			//	};
-			//}
+			//				if (!Regex.IsMatch(process.MainWindowTitle, endOptions.WindowTitle))
+			//				{
+			//					continue;
+			//				}
+
+			//				process.CloseMainWindow();
+			//			}
+			//		};
+			//	}
 
 			throw new Exception("Invalid options for close action"); //TODO proper error handling
 		}

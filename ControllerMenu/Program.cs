@@ -8,7 +8,6 @@ using ControllerMenu.Actions.Navigation;
 using ControllerMenu.Input;
 using ControllerMenu.Input.Controller;
 using ControllerMenu.Input.Keyboard;
-using ControllerMenu.Input.Models;
 using ControllerMenu.Menu.Loaders;
 using ControllerMenu.Menu.Loaders.Json;
 using ControllerMenu.Services;
@@ -26,16 +25,7 @@ namespace ControllerMenu
 
 			var container = RegisterServices();
 
-			var processIdRaw = args.Length > 0 ? args[0] : null;
-			int processId;
-			if (Int32.TryParse(processIdRaw, out processId))
-			{
-			    var activeWindowService = container.Resolve<IActiveWindowService>();
-			    activeWindowService.ProcessId = processId;
-			}
-
 		    var overlayForm = container.Resolve<Overlay>();
-
 		    Application.Run(overlayForm);
 		}
 

@@ -27,7 +27,7 @@ namespace ControllerMenu.Menu.Loaders.Json
         {
             var menuContainer = new MenuContainer();
 
-            var configRaw = File.ReadAllText($"{menuName}.json");
+            var configRaw = File.ReadAllText($"Menus\\{menuName}.json");
 		    var config = JsonConvert.DeserializeObject<JsonMenuConfiguration>(configRaw);
 
 		    foreach (var menuItemEntry in config.MenuItems)

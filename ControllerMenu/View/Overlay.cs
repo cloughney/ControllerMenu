@@ -17,8 +17,9 @@ namespace ControllerMenu.View
 	public partial class Overlay : Form
 	{
 	    private const double MaxOpacityValue = 0.95;
+		private const string DefaultMenuName = "mainmenu"; //TODO string class enum thingy for menu names?
 
-	    private readonly IActiveWindowService activeWindowService;
+		private readonly IActiveWindowService activeWindowService;
 		private readonly IFontService fontService;
 		private readonly IMenuLoader menuLoader;
 		private readonly IEnumerable<IInputHandler> inputHandlers;
@@ -26,6 +27,8 @@ namespace ControllerMenu.View
 		private readonly MenuPanel primaryMenuContainer;
 		private readonly MenuPanel secondaryMenuContainer;
 		private MenuPanel activeMenuContainer;
+
+		private delegate void OnInputDetected(IInputHandler handler, InputType inputType);
 
 		public Overlay(
 		    IApplicationContext context,
@@ -73,6 +76,10 @@ namespace ControllerMenu.View
 	                InputType.SelectItem,
 	                InputType.Back
 	            };
+
+		        var activeWindowConfig = this.activeWindowService.CurrentConfiguration;
+		        var activeMenuName = activeWindowConfig?.MenuName ?? DefaultMenuName;
+				this.PopulateMenu(activeMenuName);
 	        }
 
 	        foreach (var inputHandler in this.inputHandlers)
@@ -117,8 +124,9 @@ namespace ControllerMenu.View
 	    }
 
 	    private void SetupWindow()
-		{
-			this.TopMost = false;
+	    {
+		    this.Text = String.Empty;
+			this.TopMost = true;
 		    this.ShowInTaskbar = false;
 		    this.WindowState = FormWindowState.Maximized;
 
@@ -127,7 +135,7 @@ namespace ControllerMenu.View
 		    this.Opacity = MaxOpacityValue;
 
 		    this.RenderMenu();
-			this.PopulateMenu("mainmenu"); //TODO string class enum thingy for menu names?
+			this.PopulateMenu(DefaultMenuName);
 
 		    foreach (var inputHandler in this.inputHandlers)
 			{
@@ -140,7 +148,17 @@ namespace ControllerMenu.View
 				    InputType.Back
 				});
 
-				inputHandler.InputDetected += this.OnInputRecieved;
+				inputHandler.InputDetected += (handler, input) =>
+				{
+					if (this.InvokeRequired)
+					{
+						this.Invoke(new OnInputDetected(this.HandleInput), handler, input);
+					}
+					else
+					{
+						this.HandleInput(handler, input);
+					}
+				};
 			}
 		}
 
@@ -185,16 +203,31 @@ namespace ControllerMenu.View
 		{
 			var mainMenu = this.menuLoader.Load(menuName);
 		    var menuItems = mainMenu.MenuItems
-		        .Select(menuItem => new View.Menu.MenuItem(menuItem.Title, menuItem.Action))
+		        .Select(menuItem => new Menu.MenuItem(menuItem.Title, menuItem.Action))
 		        .ToList();
 
-		    var exitItem = new View.Menu.MenuItem("Exit", new MenuAction(this.ToggleOverlay));
-		    menuItems.Add(exitItem);
+			if (String.Equals(menuName, DefaultMenuName, StringComparison.OrdinalIgnoreCase))
+			{
+				var exitItem = new Menu.MenuItem("Exit", new MenuAction(this.ToggleOverlay));
+				menuItems.Add(exitItem);
+			}
+			else
+			{
+				var mainMenuItem = new Menu.MenuItem("Main Menu", new MenuAction(() => this.PopulateMenu(DefaultMenuName))); //TODO invoke necessary?
+				menuItems.Add(mainMenuItem);
+			}
 
 		    this.primaryMenuContainer.MenuItems = menuItems;
 		}
 
-		private void OnInputRecieved(IInputHandler handler, InputType input)
+		private void CloseSecondContainer()
+		{
+			this.secondaryMenuContainer.MenuItems.Clear();
+			this.secondaryMenuContainer.Visible = false;
+			this.activeMenuContainer = this.primaryMenuContainer;
+		}
+
+		private void HandleInput(IInputHandler handler, InputType input)
 		{
 			switch (input)
 			{
@@ -206,6 +239,10 @@ namespace ControllerMenu.View
 					if (this.activeMenuContainer != this.primaryMenuContainer)
 					{
 					    this.CloseSecondContainer();
+					}
+					else
+					{
+						this.ToggleOverlay();
 					}
 
 					break;
@@ -222,13 +259,6 @@ namespace ControllerMenu.View
 					this.activeMenuContainer.GetSelectedItem().PerformAction();
 					break;
 			}
-		}
-
-		private void CloseSecondContainer()
-		{
-			this.secondaryMenuContainer.MenuItems.Clear();
-			this.secondaryMenuContainer.Visible = false;
-			this.activeMenuContainer = this.primaryMenuContainer;
 		}
 	}
 }

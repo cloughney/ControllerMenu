@@ -105,7 +105,7 @@ namespace ControllerMenu.Input.Controller
                         continue;
                     }
 
-	                var inputType = GetInputTypeFromStateChanges(previousDeviceState.Gamepad, currentState.Gamepad);
+	                var inputType = this.GetInputTypeFromStateChanges(previousDeviceState.Gamepad, currentState.Gamepad);
 
 	                currentDeviceStates[deviceIndex] = currentState;
 
@@ -114,7 +114,7 @@ namespace ControllerMenu.Input.Controller
 	                    continue;
 	                }
 
-	                //this.PulseVibration(deviceIndex, 200);
+	                PulseVibration(deviceIndex, 150);
 	                this.InputDetected(this, inputType.Value);
 	            }
 
@@ -143,15 +143,23 @@ namespace ControllerMenu.Input.Controller
 	        return null;
 	    }
 
-	    private void PulseVibration(int deviceIndex, int vibrationLength)
+	    private static void PulseVibration(int deviceIndex, int vibrationLength)
 	    {
-	        var vibration = new XInputVibration { LeftMotorSpeed = 65535 };
+		    const int VibrationMotorSpeed = 15000;
+
+	        var vibration = new XInputVibration
+	        {
+		        LeftMotorSpeed = VibrationMotorSpeed,
+				RightMotorSpeed = VibrationMotorSpeed
+	        };
+
 	        XInputSetState(deviceIndex, ref vibration);
 
 	        Thread.Sleep(vibrationLength);
 
-	        vibration.LeftMotorSpeed = 0;
-	        XInputSetState(deviceIndex, ref vibration);
+	        vibration.LeftMotorSpeed = vibration.RightMotorSpeed = 0;
+
+			XInputSetState(deviceIndex, ref vibration);
 	    }
 
 	    private static InputType? CheckForMenuInput(XInputGamepad previousState, XInputGamepad currentState)
